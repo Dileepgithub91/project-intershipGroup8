@@ -1,6 +1,6 @@
 const internModel = require("../Models/InternModel")
 let collegeModel = require('../Models/CollegeModel')
-let { isValid,isValidFName,isValidUrl } = require('../Validator/validation')
+let { isValid,isValidUrl, isValidName } = require('../Validator/validation')
 
 let createCollegeData = async function (req, res) {
    res.setHeader('Access-Control-Allow-Origin','*')
@@ -12,14 +12,14 @@ let createCollegeData = async function (req, res) {
       
       const { name, fullName, logoLink } = collegeData
 
-
+      
       if (!isValid(fullName)) return res.status(400).send({ status: false, msg: "fullName is required" })
       if (!isValid(logoLink)) return res.status(400).send({ status: false, msg: "logoLink is required" })
       if (!isValid(name)) return res.status(400).send({ status: false, msg: "name is required field, please enter" })
-
-      if (!isValidFName(fullName)) return res.status(400).send({ status: false, msg: "Pls Enter Valid fullName " }) 
+      
+      if(!isValidName(name)) return res.status(400).send({status:false,msg: "Please enter valid name"})
+      if (!isValidName(fullName)) return res.status(400).send({ status: false, msg: "Pls Enter Valid fullName " }) 
       if (!isValidUrl(logoLink)) return res.status(400).send({ status: false, msg: "Pls Enter Valid logoLink " })
-      if (!isValidFName(name)) return res.status(400).send({ status: false, msg: "please enter valid name(between A-Z or a-z)" })
 
       let checkNameNotDeleted = await collegeModel.findOne({ name: name, isDeleted: false })
       if (checkNameNotDeleted) return res.status(400).send({ status: false, msg: "college  is already registered " })
